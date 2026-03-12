@@ -1,0 +1,191 @@
+provide_settings:
+  llm:
+    provider: "OpenAI"
+    config:
+      # qwen group
+      host: "qwen"
+      model: "qwen-plus"
+      input_token_price: 0.0008
+      output_token_price: 0.008
+      api_key: "xxx"  
+      base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+      # # deepseek-v3 group
+      # host: "deepseek"
+      # model: 'deepseek-chat'
+      # input_token_price: 0.002
+      # output_token_price: 0.003
+      # api_key: "sk-97f21a3dcf244fd59b08fa4906912579"
+      # base_url: "https://api.deepseek.com"
+
+      stream: false # 启用流式输出
+      enable_thinking: false # 启用思考模式
+      verbose: true  # 启用详细日志
+      timeout: 120  # 超时时间（秒），避免SSL握手超时
+  
+  reasoning_llm:
+    provider: "OpenAI"
+    config:
+      # qwq group
+      # model: "qwq-plus"  # Using a more powerful model for reasoning tasks
+      # input_token_price: 0.0008
+      # output_token_price: 0.008
+
+      # qwen group
+      # host: "qwen"
+      # model: "qwen-plus"
+      # input_token_price: 0.0008
+      # output_token_price: 0.008
+
+      # deepseek group
+      # model: 'deepseek-v3.2-exp'
+      # input_token_price: 0.002
+      # output_token_price: 0.003
+
+      # deepseek-r1 group
+      host: "deepseek"
+      model: 'deepseek-reasoner'
+      input_token_price: 0.002
+      output_token_price: 0.003
+
+      # qwen key and url
+      # api_key: "sk-b029a397d36a4fb0a19e23f8fa380bc1"  
+      # base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+      # deepseek key and url
+      api_key: "xxx"
+      base_url: "https://api.deepseek.com"
+
+      stream: true  # 启用流式输出
+      enable_thinking: true # 启用思考模式
+      verbose: true  # 启用详细日志
+      timeout: 120  # 超时时间（秒），避免SSL握手超时
+
+  lctx_reasoning_llm: # long context llm model
+    provider: "OpenAI"
+    config:
+      # qwen group
+      # host: "qwen"
+      # model: "qwen-plus"
+      # input_token_price: 0.0008
+      # output_token_price: 0.008
+
+      # deepseek group
+      host: "deepseek"
+      model: "deepseek-reasoner"
+      input_token_price: 0.002
+      output_token_price: 0.003
+
+      # qwen key and url
+      # api_key: "sk-b029a397d36a4fb0a19e23f8fa380bc1"  
+      # base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+
+      # deepseek key and url
+      api_key: "xxx"
+      base_url: "https://api.deepseek.com"
+
+      stream: true  # 启用流式输出
+      enable_thinking: true # 启用思考模式
+      verbose: true  # 启用详细日志
+      depress_verbose_print: true  # 抑制冗长的打印输出
+      timeout: 120  # 超时时间（秒），避免SSL握手超时
+
+  writing_llm:
+    provider: "OpenAI"
+    config:
+      stream: true  # 启用流式输出
+      verbose: true  # 启用详细日志
+      host: "qwen"
+      model: "qwen-max-latest"  # Using a model optimized for writing tasks
+      input_token_price: 0.0032
+      output_token_price: 0.0128
+      api_key: "xxx"  # Uncomment to override the `OPENAI_API_KEY` set in the environment variable
+      base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+      timeout: 120  # 超时时间（秒），避免SSL握手超时
+
+  embedding:
+    on_demand_initialize: false
+    provider: "MilvusEmbedding"
+    config:
+      # model: "BAAI/bge-base-en-v1.5"
+      # device: "cpu"
+      model: "default"
+
+  file_loader:
+    on_demand_initialize: false
+    provider: "PDFLoader"
+    config: {}
+
+  web_crawler:
+    on_demand_initialize: true
+    provider: "FireCrawlCrawler"
+    config: {}
+
+  vector_db:
+    on_demand_initialize: false
+    provider: "Milvus"
+    config:
+      default_collection: "prod_rbase_bge_base_en_v1_5_1"
+      uri: "http://xxx:19530"
+      # default_collection: "rbase_articles"
+      # uri: "http://127.0.0.1:19530"
+      token: "root:Milvus"
+      db: "default"
+
+query_settings:
+  max_iter: 3
+
+load_settings:
+  chunk_size: 1500
+  chunk_overlap: 100
+
+rbase_settings:
+  verbose: true
+  env: "dev"
+  database:
+    provider: "mysql"
+    config:
+      host: "rm-m5ebr1xrz811i6773vo.mysql.rds.aliyuncs.com"
+      port: 3306
+      database: "online_rbase"
+      username: "xxx"
+      password: "xxx"
+      # host: "eurekadev.mimixiche.com"
+      # port: 40306
+      # database: "rbase"
+      # username: "mimi"
+      # password: "Mimi2021"
+  oss:
+    host: "https://pics-xldkp-com.oss-cn-qingdao.aliyuncs.com/"
+  dict_path:
+    cn: "database/dicts/rbase_dict_cn.txt"
+    en: "database/dicts/rbase_dict_en.txt"
+  sensitive_word_detection:
+    # 阿里云文本审核增强版服务配置
+    access_key_id: "LTAI5t9GV3GYPjgP9nKgiM4G"  # 阿里云访问密钥ID，留空则从环境变量获取
+    access_key_secret: "QYATjpPK9UyPlxRGsc38eBAFXv9xxN"  # 阿里云访问密钥Secret，留空则从环境变量获取
+    region: "cn-beijing"  # 阿里云地域
+    service_type: "comment_detection_pro"  # 检测服务类型：nickname_detection_pro, chat_detection_pro, comment_detection_pro, ugc_moderation_byllm, ad_compliance_detection_pro
+    timeout: 30  # 请求超时时间（秒）
+    enabled: true  # 是否启用敏感词检测功能
+    # 批量检测配置
+    batch_size: 10  # 批量检测时的批次大小
+    retry_count: 3  # 失败重试次数
+    retry_delay: 1  # 重试间隔（秒）
+  # 阿里云MNS配置
+  mns:
+    endpoint: 'http://1664987339199249.mns.cn-qingdao.aliyuncs.com' # 示例: http://1234567890123456.mns.cn-hangzhou.aliyuncs.com
+    access_id: 'LTAI5t9GV3GYPjgP9nKgiM4G'
+    access_key: 'QYATjpPK9UyPlxRGsc38eBAFXv9xxN'
+    queue_name: 'auto-task-test'  # MNS队列名称
+    verify_ssl: false  # 是否验证SSL证书（开发环境建议设为false，生产环境建议设为true）
+  api:
+    log_file: "logs/api.log"
+    summary_cache_days: 5
+    summary_article_reference_cnt: 50
+    discuss_chunk_cnt: 50
+    discuss_thread_active_days: 5
+    discuss_thread_favorite_limit: 3 # per user
+    show_reasoning_content: true
+    host: "0.0.0.0"
+    port: 8000
