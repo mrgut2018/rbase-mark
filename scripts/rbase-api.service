@@ -1,0 +1,32 @@
+[Unit]
+Description=Rbase API Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=exec
+User=rbase
+Group=rbase
+WorkingDirectory=/opt/rbase/deep-academic-research
+Environment=PYTHONPATH=/opt/rbase/deep-academic-research
+ExecStart=/opt/rbase/deep-academic-research/venv/bin/python /opt/rbase/deep-academic-research/scripts/start_api_server.py --workers 4 --loop asyncio
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rbase-api
+
+# 资源限制
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# 安全设置
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/rbase/deep-academic-research/logs /opt/rbase/deep-academic-research/data
+
+[Install]
+WantedBy=multi-user.target 

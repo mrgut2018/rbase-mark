@@ -1,0 +1,29 @@
+[Unit]
+Description=Deep Academic Research Task Dispatcher Service
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/deep-academic-research
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="PYTHONPATH=/path/to/deep-academic-research"
+ExecStart=/usr/bin/python3 /path/to/deep-academic-research/services/task_dispatcher.py --config /path/to/deep-academic-research/config.rbase.yaml --interval 5
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=task-dispatcher
+
+# 资源限制
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# 安全选项
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
