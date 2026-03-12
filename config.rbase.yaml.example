@@ -162,8 +162,8 @@ rbase_settings:
     en: "database/dicts/rbase_dict_en.txt"
   sensitive_word_detection:
     # 阿里云文本审核增强版服务配置
-    access_key_id: "LTAI5t9GV3GYPjgP9nKgiM4G"  # 阿里云访问密钥ID，留空则从环境变量获取
-    access_key_secret: "QYATjpPK9UyPlxRGsc38eBAFXv9xxN"  # 阿里云访问密钥Secret，留空则从环境变量获取
+    access_key_id: "xxx"  # 阿里云访问密钥ID，留空则从环境变量获取
+    access_key_secret: "xxx"  # 阿里云访问密钥Secret，留空则从环境变量获取
     region: "cn-beijing"  # 阿里云地域
     service_type: "comment_detection_pro"  # 检测服务类型：nickname_detection_pro, chat_detection_pro, comment_detection_pro, ugc_moderation_byllm, ad_compliance_detection_pro
     timeout: 30  # 请求超时时间（秒）
@@ -175,8 +175,8 @@ rbase_settings:
   # 阿里云MNS配置
   mns:
     endpoint: 'http://1664987339199249.mns.cn-qingdao.aliyuncs.com' # 示例: http://1234567890123456.mns.cn-hangzhou.aliyuncs.com
-    access_id: 'LTAI5t9GV3GYPjgP9nKgiM4G'
-    access_key: 'QYATjpPK9UyPlxRGsc38eBAFXv9xxN'
+    access_id: 'xxx'
+    access_key: 'xxx'
     queue_name: 'auto-task-test'  # MNS队列名称
     verify_ssl: false  # 是否验证SSL证书（开发环境建议设为false，生产环境建议设为true）
   api:
