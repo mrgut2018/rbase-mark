@@ -27,17 +27,7 @@ python scripts/start_api_server.py --workers 4
 python scripts/start_api_server.py --reload --verbose
 
 # 生产模式（多进程）
-python scripts/start_api_server.py --workers 4 --loop asyncio
-```
-
-#### 方法二：直接使用 uvicorn
-
-```bash
-# 多进程模式
-uvicorn deepsearcher.api.main:app --host 0.0.0.0 --port 8000 --workers 4 --loop asyncio
-
-# 单进程模式（开发）
-uvicorn deepsearcher.api.main:app --host 0.0.0.0 --port 8000 --reload
+python scripts/start_api_server.py --workers 8 --loop asyncio
 ```
 
 ### 2. 工作进程数量建议
@@ -52,25 +42,25 @@ uvicorn deepsearcher.api.main:app --host 0.0.0.0 --port 8000 --reload
 
 ```bash
 # 复制服务文件
-sudo cp scripts/rbase-api.service /etc/systemd/system/
+sudo cp scripts/rbase-mark-api.service /etc/systemd/system/
 
 # 修改配置（根据需要调整）
-sudo nano /etc/systemd/system/rbase-api.service
+sudo nano /etc/systemd/system/rbase-mark-api.service
 
 # 重新加载 systemd
 sudo systemctl daemon-reload
 
 # 启用服务
-sudo systemctl enable rbase-api
+sudo systemctl enable rbase-mark-api
 
 # 启动服务
-sudo systemctl start rbase-api
+sudo systemctl start rbase-mark-api
 
 # 查看状态
-sudo systemctl status rbase-api
+sudo systemctl status rbase-mark-api
 
 # 查看日志
-sudo journalctl -u rbase-api -f
+sudo journalctl -u rbase-mark-api -f
 ```
 
 ### 4. Nginx 负载均衡配置
@@ -187,31 +177,6 @@ tail -f /var/log/nginx/rbase_api_access.log
 
 # 查看系统日志
 sudo journalctl -u rbase-api -f
-```
-
-### 7. 性能测试
-
-#### 使用 ab 进行压力测试
-
-```bash
-# 安装 ab
-sudo apt-get install apache2-utils
-
-# 测试并发性能
-ab -n 1000 -c 10 http://localhost/api/health
-
-# 测试 questions 接口
-ab -n 100 -c 5 -p test_data.json -T application/json http://localhost/api/questions
-```
-
-#### 使用 wrk 进行更详细的测试
-
-```bash
-# 安装 wrk
-sudo apt-get install wrk
-
-# 测试
-wrk -t12 -c400 -d30s http://localhost/api/health
 ```
 
 ## 配置示例

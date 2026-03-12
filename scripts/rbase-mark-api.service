@@ -7,9 +7,9 @@ Wants=network.target
 Type=exec
 User=rbase
 Group=rbase
-WorkingDirectory=/opt/rbase/deep-academic-research
-Environment=PYTHONPATH=/opt/rbase/deep-academic-research
-ExecStart=/opt/rbase/deep-academic-research/venv/bin/python /opt/rbase/deep-academic-research/scripts/start_api_server.py --workers 4 --loop asyncio
+WorkingDirectory=/opt/rbase/rbase-mark
+Environment=PYTHONPATH=/opt/rbase/drbase-mark
+ExecStart=/opt/rbase/drbase-mark/venv/bin/python /opt/rbase/drbase-mark/scripts/start_api_server.py --workers 4 --loop asyncio
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 RestartSec=5
@@ -26,7 +26,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/opt/rbase/deep-academic-research/logs /opt/rbase/deep-academic-research/data
+ReadWritePaths=/opt/rbase/drbase-mark/logs /opt/rbase/drbase-mark/data
 
 [Install]
 WantedBy=multi-user.target 

@@ -215,3 +215,5 @@ debug_cache/
 
 # Claude Code
 .claude/
+
+config.rbase.yaml
