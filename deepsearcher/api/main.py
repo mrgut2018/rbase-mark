@@ -83,12 +83,28 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Rbase API...")
 
 # Initialize FastAPI app
+def _read_enable_docs():
+    """从配置文件读取是否启用 API 文档"""
+    import yaml
+    settings = Settings()
+    config_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        settings.CONFIG_FILE_PATH,
+    )
+    try:
+        with open(config_path, "r") as f:
+            cfg = yaml.safe_load(f) or {}
+        return cfg.get("rbase_settings", {}).get("api", {}).get("enable_docs", False)
+    except Exception:
+        return False
+
+_enable_docs = _read_enable_docs()
 app = FastAPI(
     title="Rbase API",
     description="Rbase API for academic research",
     version="0.1.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if _enable_docs else None,
+    redoc_url="/redoc" if _enable_docs else None,
     lifespan=lifespan,
 )
 
