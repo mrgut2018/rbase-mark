@@ -40,8 +40,8 @@ def main():
     主函数：启动多进程 API 服务器
     """
     parser = argparse.ArgumentParser(description="Rbase API 服务器启动脚本")
-    parser.add_argument("--host", default="0.0.0.0", help="服务器主机地址 (默认: 0.0.0.0)")
-    parser.add_argument("--port", type=int, default=8000, help="服务器端口 (默认: 8000)")
+    parser.add_argument("--host", default=None, help="服务器主机地址 (默认: 0.0.0.0)")
+    parser.add_argument("--port", type=int, default=None, help="服务器端口 (默认: 8000)")
     parser.add_argument("--workers", "-w", type=int, default=None, 
                        help=f"工作进程数量 (默认: 自动计算，当前建议: {get_optimal_worker_count()})")
     # uvloop 仅支持 Linux/macOS，Windows 使用 asyncio
@@ -74,13 +74,15 @@ def main():
     init_config(configuration.config)
     
     # 获取服务器配置
+    # 优先级：命令行参数 > 配置文件 > 默认值
     try:
         api_settings = configuration.config.rbase_settings.get('api', {})
-        host = api_settings.get('host', args.host)
-        port = int(api_settings.get('port', args.port))
+        host = args.host if args.host is not None else api_settings.get('host', '0.0.0.0')
+        port = args.port if args.port is not None else int(api_settings.get('port', 8000))
     except Exception as e:
         print(f"获取服务器配置失败: {e}")
-        host, port = args.host, args.port
+        host = args.host if args.host is not None else '0.0.0.0'
+        port = args.port if args.port is not None else 8000
     
     print(f"启动服务器: {host}:{port}")
     print(f"工作进程数: {args.workers}")
