@@ -92,7 +92,7 @@ def _read_enable_docs():
         settings.CONFIG_FILE_PATH,
     )
     try:
-        with open(config_path, "r") as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             cfg = yaml.safe_load(f) or {}
         return cfg.get("rbase_settings", {}).get("api", {}).get("enable_docs", False)
     except Exception:
