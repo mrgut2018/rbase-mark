@@ -18,7 +18,7 @@ if [ -f logs/api.pid ]; then
     fi
     rm -f logs/api.pid
 fi
-nohup python scripts/start_api_server.py --port 8868 --workers 4 --loop asyncio \
+nohup python -u scripts/start_api_server.py --port 8868 --workers 4 --loop asyncio \
   > logs/api.log 2>&1 &
 echo $! > logs/api.pid
 echo "API server started, PID: $(cat logs/api.pid)"
