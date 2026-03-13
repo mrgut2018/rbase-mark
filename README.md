@@ -49,6 +49,8 @@ source .venv/bin/activate  # Linux/Mac
 
 # Install dependencies
 pip install -e .
+
+pip install transformers==4.40.0
 ```
 
 ### Configuration
