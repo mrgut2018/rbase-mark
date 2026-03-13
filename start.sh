@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /data0/htdocs/rbase-mark/code
 . .venv/bin/activate
+export HF_ENDPOINT=https://hf-mirror.com
 mkdir -p logs
 
 # 停止旧进程
