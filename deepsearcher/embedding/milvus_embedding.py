@@ -18,6 +18,34 @@ MILVUS_MODEL_DIM_MAP = {
 }
 
 
+def _batch_onnx_encode(ort_session, tokenizer, texts: List[str]) -> List[np.ndarray]:
+    """对 ONNX 模型做批量推理，替代逐条调用"""
+    encoded = tokenizer.batch_encode_plus(
+        texts, padding="max_length", truncation=True, return_tensors="np"
+    )
+    ort_inputs = {
+        "input_ids": encoded["input_ids"].astype("int64"),
+        "attention_mask": encoded["attention_mask"].astype("int64"),
+        "token_type_ids": encoded["token_type_ids"].astype("int64"),
+    }
+    ort_outputs = ort_session.run(None, ort_inputs)
+    token_embeddings = ort_outputs[0]
+    # mean pooling
+    attention_mask = ort_inputs["attention_mask"]
+    input_mask_expanded = (
+        np.expand_dims(attention_mask, -1)
+        .repeat(token_embeddings.shape[-1], -1)
+        .astype(float)
+    )
+    sentence_embs = np.sum(token_embeddings * input_mask_expanded, 1) / np.maximum(
+        input_mask_expanded.sum(1), 1e-9
+    )
+    # L2 normalize
+    norms = np.linalg.norm(sentence_embs, axis=1, keepdims=True)
+    sentence_embs = sentence_embs / np.maximum(norms, 1e-9)
+    return [sentence_embs[i] for i in range(len(texts))]
+
+
 class MilvusEmbedding(BaseEmbedding):
     def __init__(self, model: str = None, **kwargs) -> None:
         model_name = model
@@ -26,11 +54,13 @@ class MilvusEmbedding(BaseEmbedding):
         if "model_name" in kwargs and (not model_name or model_name == "default"):
             model_name = kwargs.pop("model_name")
 
+        self._is_onnx = False
         if not model_name or model_name in [
             "default",
             "GPTCache/paraphrase-albert-onnx",
         ]:
             self.model = model.DefaultEmbeddingFunction(**kwargs)
+            self._is_onnx = True
         else:
             if model_name.startswith("jina-"):
                 self.model = model.dense.JinaEmbeddingFunction(model_name, **kwargs)
@@ -44,7 +74,15 @@ class MilvusEmbedding(BaseEmbedding):
         return self.model.encode_queries([text])[0]
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        embeddings = self.model.encode_documents(texts)
+        if not texts:
+            return []
+        if self._is_onnx and hasattr(self.model, "ort_session"):
+            # 批量 ONNX 推理，避免逐条调用
+            embeddings = _batch_onnx_encode(
+                self.model.ort_session, self.model.tokenizer, texts
+            )
+        else:
+            embeddings = self.model.encode_documents(texts)
         if isinstance(embeddings[0], np.ndarray):
             return [embedding.tolist() for embedding in embeddings]
         else:
